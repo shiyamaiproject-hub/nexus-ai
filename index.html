@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e1424"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>NEXUS AI</title>
+<style>
+:root{--bg:#0e1424;--s1:#161e33;--s2:#212d4b;--tx:#e8ecf6;--mu:#8e9bb8;--ac:#5eead4;--ac2:#a78bfa;--er:#fb7185;--cb:#0a0f1c}
+:root[data-t=light]{--bg:#f3f5fb;--s1:#fff;--s2:#e1e6f2;--tx:#141a2b;--mu:#58647f;--cb:#eef1f8}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:radial-gradient(800px 380px at 90% -8%,#5eead430,transparent),radial-gradient(700px 380px at -10% 0,#a78bfa2e,transparent),var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,Roboto,sans-serif;display:flex;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top,0)}
+[hidden]{display:none!important}
+header{padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--s2)}
+.logo{font-size:20px;letter-spacing:.5px;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;color:transparent}
+header small{color:var(--mu);font-size:13px}
+main{flex:1;min-height:0;position:relative}
+.view{display:none;position:absolute;inset:0;flex-direction:column;overflow-y:auto;padding:12px 14px}
+.view.on{display:flex}
+#v-chat{padding:0}
+button,select,input,textarea{font:inherit;color:var(--tx)}
+button{background:var(--s2);border:0;border-radius:10px;padding:8px 12px;cursor:pointer}
+button:active{opacity:.7}
+button.pri{background:linear-gradient(90deg,var(--ac),var(--ac2));color:#06101e;font-weight:600}
+select,input,textarea{background:var(--s1);border:1px solid var(--s2);border-radius:10px;padding:10px;width:100%}
+textarea{resize:none}
+:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+.bar{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;border-bottom:1px solid var(--s2)}
+.bar select{width:auto;flex:none;padding:7px 8px}
+.bar button{flex:none;font-size:14px;padding:7px 10px}
+#msgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.b{max-width:92%;padding:10px 13px;border-radius:16px;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:anywhere}
+.b.u{align-self:flex-end;background:linear-gradient(135deg,var(--ac2),#8b9cf7);color:#0c0a1d;border-bottom-right-radius:4px}
+.b.a{align-self:flex-start;background:var(--s1);border:1px solid var(--s2);border-bottom-left-radius:4px}
+.b.e{align-self:flex-start;background:#3a1620;border:1px solid var(--er)}
+.b pre{background:var(--cb);border-radius:8px;padding:8px;overflow-x:auto;margin:6px 0;white-space:pre}
+code{font:13px ui-monospace,Menlo,monospace}
+.acts{display:flex;gap:6px;margin-top:6px}
+.acts button{font-size:12px;padding:3px 9px;background:var(--s2)}
+.empty{margin:auto 0;text-align:center}
+.empty h2{font-size:26px;font-weight:700;margin-bottom:4px}
+.empty p{color:var(--mu);margin-bottom:16px}
+.sg{display:block;width:100%;text-align:left;margin-bottom:8px;background:var(--s1);border:1px solid var(--s2)}
+.comp{display:flex;gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0));border-top:1px solid var(--s2);align-items:flex-end}
+.comp textarea{max-height:120px}
+.ic{padding:10px 12px}
+#chip{padding:4px 14px;color:var(--ac);font-size:14px}
+nav{display:flex;border-top:1px solid var(--s2);padding-bottom:env(safe-area-inset-bottom,0);background:var(--bg)}
+nav button{flex:1;background:none;border-radius:0;padding:8px 0 9px;color:var(--mu);border-top:3px solid transparent;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px}
+header button{margin-left:auto;font-size:13px;padding:6px 11px}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.tg button{text-align:left;background:var(--s1);border:1px solid var(--s2);padding:10px;display:flex;flex-direction:column;gap:2px}
+.tg button small{color:var(--mu);font-size:12px;line-height:1.3}
+.tg button.on{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
+.dots i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mu);margin-right:4px;animation:bn 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes bn{0%,80%,100%{opacity:.3}40%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.dots i{animation:none}}
+.chk{display:flex;align-items:center;gap:8px;color:var(--mu);font-size:14px;margin-top:8px}.chk input{width:auto}
+nav button.on{color:var(--ac);border-top-color:var(--ac)}
+h3{margin:14px 0 6px;font-size:17px}
+label{display:block;color:var(--mu);font-size:14px;margin:12px 0 4px}
+.row{display:flex;gap:8px;align-items:center}
+.row>*{flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chips button{font-size:14px;padding:6px 11px}
+.chips button.on{background:var(--ac);color:#06101e}
+.out{background:var(--s1);border:1px solid var(--s2);border-radius:12px;padding:12px;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+.out img{width:100%;border-radius:10px;display:block}
+.lk{display:block;color:var(--ac);font-size:14px;margin-top:8px}
+.ld{color:var(--mu)}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.gal img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.note{color:var(--mu);font-size:13px;margin-top:8px}
+#sheet,#tsheet{position:fixed;inset:0;background:#000a;display:flex;align-items:flex-end;z-index:9}
+#sheet .card,#tsheet .card{background:var(--s1);width:100%;max-height:70%;overflow-y:auto;border-radius:18px 18px 0 0;padding:14px}
+.it{display:flex;gap:8px;padding:6px 0}
+.it button:first-child{flex:1;text-align:left;background:var(--s2)}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--s2);padding:9px 16px;border-radius:20px;z-index:10;max-width:90%;text-align:center}
+#vo{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center}
+#vs{font-size:22px;font-weight:700}
+.orb{width:150px;height:150px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));animation:pl 1.6s infinite}
+@keyframes pl{0%{box-shadow:0 0 0 0 #5eead466}100%{box-shadow:0 0 0 36px #5eead400}}
+#vo[data-s=Thinking] .orb{animation-duration:.6s;opacity:.7}
+#vo[data-s=Speaking] .orb{background:linear-gradient(135deg,var(--ac2),var(--ac))}
+#vo[data-s=Stopped] .orb{animation:none;opacity:.3}
+@media (prefers-reduced-motion:reduce){.orb{animation:none}}
+#vt{max-height:28vh;overflow:auto;color:var(--mu);width:100%}
+#vo .row{width:100%;max-width:380px}
+</style></head><body>
+<header><span class="logo">NEXUS AI</span><small>chat, images, creative tools</small><button id="th2">Theme</button></header>
+<main>
+<section id="v-chat" class="view on">
+ <div class="bar"><select id="persona"></select><button id="vcb">Voice chat</button><button id="hist">History</button><button id="nw">New</button><button id="rt">Retry</button><button id="ex">Export</button></div>
+ <div id="msgs"></div>
+ <div id="chip" hidden></div>
+ <div class="comp"><button id="att" class="ic" aria-label="Attach file">+</button><input type="file" id="file" hidden accept=".txt,.md,.csv,.json,.html,.js,.py,.xml"><textarea id="inp" rows="1" placeholder="Message NEXUS"></textarea><button id="mic" class="ic">Mic</button><button id="send" class="pri ic">Send</button></div>
+</section>
+<section id="v-img" class="view">
+ <h3>Create an image</h3>
+ <textarea id="ip" rows="3" placeholder="A lighthouse on a cliff at sunrise, fog rolling in"></textarea>
+ <div class="row" style="margin-top:8px"><select id="is" aria-label="Style"><option value="">No style</option><option>photorealistic, 35mm photo, natural light</option><option>cinematic film still, dramatic lighting, shallow depth of field</option><option>anime illustration, clean line art, vibrant colors</option><option>digital painting, concept art, rich detail</option><option>3D render, soft studio light, octane style</option><option>watercolor, soft edges, textured paper</option><option>minimal flat vector logo, clean shapes</option><option>product photo, white backdrop, studio lighting</option></select>
+ <select id="isz" aria-label="Size"><option value="1024x1024">Square</option><option value="768x1024">Portrait</option><option value="1024x768">Landscape</option><option value="1344x768">Wide 16:9</option><option value="768x1344">Tall 9:16</option></select></div>
+ <div class="row" style="margin-top:8px"><select id="im" aria-label="Model"><option value="flux">Best quality</option><option value="turbo">Fast</option></select></div>
+ <label class="chk"><input type="checkbox" id="ia" checked>Let the AI improve my prompt first</label>
+ <label class="chk"><input type="checkbox" id="il">Keep the same composition when I edit the prompt</label>
+ <div class="row" style="margin-top:10px"><button id="imp">Improve prompt</button><button id="gen" class="pri">Create image</button></div>
+ <div id="iout" class="out" hidden></div>
+ <p class="note">Images come from a free online service (Pollinations). It needs internet and can be slow or busy.</p>
+ <h3>Recent</h3><div id="gal" class="gal"></div>
+</section>
+<section id="v-tools" class="view">
+ <h3>Creative tools</h3>
+ <div id="tl" class="tg"></div>
+ <p id="th" class="note" style="margin:0 0 8px"></p>
+ <button id="ted" hidden style="margin-bottom:8px">Edit or delete this tool</button>
+ <textarea id="ti" rows="6"></textarea>
+ <div class="row" style="margin-top:8px"><button id="tf">Load a file</button><button id="tr" class="pri">Run</button></div>
+ <input type="file" id="tfile" hidden accept=".txt,.md,.csv,.json,.html,.js,.py,.xml">
+ <div id="to" class="out" hidden></div>
+ <div id="tact" class="acts" hidden><button id="tc">Copy</button><button id="ts">Listen</button><button id="tch">Continue in chat</button></div>
+</section>
+<section id="v-set" class="view">
+ <h3>AI connection</h3>
+ <div class="chips"><button id="p1">OpenRouter (free)</button><button id="p2">Ollama on my network</button></div>
+ <label for="su">Server URL</label><input id="su" autocapitalize="off" autocorrect="off">
+ <label for="sm">Model name</label><input id="sm" autocapitalize="off" autocorrect="off">
+ <label for="sk">API key (stays on this phone)</label><input id="sk" type="password" autocapitalize="off" autocomplete="off">
+ <div class="row" style="margin-top:12px"><button id="ss" class="pri">Save settings</button><button id="st">Test connection</button></div>
+ <p id="sr" class="note"></p>
+ <h3>Home screen app</h3><button id="inst" class="pri" style="width:100%">Install on home screen</button><p class="note">Installing works when the app is opened from a web address (https). A file opened from Downloads cannot be installed.</p>
+ <h3>Your data</h3>
+ <div class="row"><button id="ea">Download all chats</button><button id="ca">Delete everything</button></div>
+ <p class="note">Chats, images list and settings are stored only in this browser. Clearing Chrome data removes them.</p>
+</section>
+</main>
+<nav><button data-v="chat" class="on"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>Chat</button><button data-v="img"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M21 16l-5-5-9 9"/></svg>Images</button><button data-v="tools"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6l4 4-9 9H5v-4z"/><path d="M13 7l4 4"/></svg>Tools</button><button data-v="set"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>Settings</button></nav>
+<div id="sheet" hidden><div class="card"><div class="row"><b>Your chats</b><button id="cl">Close</button></div><div id="list"></div></div></div>
+<div id="tsheet" hidden><div class="card"><div class="row"><b id="tft">New tool</b><button id="tfc">Close</button></div>
+<label for="tn">Name</label><input id="tn" maxlength="30" placeholder="Poem writer">
+<label for="td">What it does (one line)</label><input id="td" maxlength="60" placeholder="Writes poems in my style">
+<label for="tsys">Instructions for the AI</label><textarea id="tsys" rows="5" placeholder="You are a poet. Write..."></textarea>
+<button id="tai" style="margin-top:8px;width:100%">Write the instructions for me</button>
+<div class="row" style="margin-top:10px"><button id="tdel">Delete</button><button id="tsv" class="pri">Save tool</button></div></div></div>
+<div id="vo" hidden data-s="Listening"><div id="vs">Listening</div><button id="vc" class="orb" aria-label="Tap to send or interrupt"></button><p id="vt"></p>
+<div class="row"><select id="vl" aria-label="Language"><option value="">Phone language</option><option value="en-US">English (US)</option><option value="en-IN">English (India)</option><option value="hi-IN">Hindi</option><option value="ta-IN">Tamil</option><option value="te-IN">Telugu</option><option value="bn-IN">Bengali</option><option value="es-ES">Spanish</option><option value="fr-FR">French</option><option value="de-DE">German</option><option value="pt-BR">Portuguese</option><option value="ar-SA">Arabic</option></select><button id="vx" class="pri">End voice chat</button></div></div>
+<div id="toast" hidden></div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let S={chats:[],cur:null,cfg:{url:'https://openrouter.ai/api/v1',model:'openrouter/free',key:''},imgs:[]};
+try{const x=localStorage.getItem('nexus2');if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
+S.ct=S.ct||[];const save=()=>{try{localStorage.setItem('nexus2',JSON.stringify(S))}catch(e){}};
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const md=t=>esc(t).replace(/```(?:\w*\n)?([\s\S]*?)```/g,'<pre><code>$1</code></pre>').replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/^#{1,4} (.+)$/gm,'<b>$1</b>');
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,3200)}
+function dl(n,t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download=n;a.click()}
+function copy(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Copied'),()=>toast('Copy not allowed here'))}
+function say(t){const s=window.speechSynthesis;if(!s)return toast('Speech not supported');if(s.speaking){s.cancel();return}s.speak(new SpeechSynthesisUtterance(t))}
+
+/* ---------- AI connection ---------- */
+function ep(){let u=(S.cfg.url||'').trim().replace(/\/+$/,'');if(!u)return'';if(/chat\/completions$/.test(u))return u;if(!/\/v\d+$/.test(u))u+='/v1';return u+'/chat/completions'}
+async function llm(msgs,cb){
+ const url=ep();if(!url)throw new Error('Add your server in Settings first.');
+ if(!S.cfg.key&&/openrouter/.test(url))throw new Error('Add your OpenRouter key in Settings first.');
+ const h={'Content-Type':'application/json'};if(S.cfg.key)h.Authorization='Bearer '+S.cfg.key;
+ const r=await fetch(url,{method:'POST',headers:h,body:JSON.stringify({model:S.cfg.model||'openrouter/free',messages:msgs,stream:true})});
+ if(!r.ok){let t='';try{t=(await r.json()).error.message}catch(e){}throw new Error('Error '+r.status+(t?': '+t:''))}
+ if(!r.body||!(r.headers.get('content-type')||'').includes('event-stream')){const j=await r.json();const t=j.choices[0].message.content;cb(t);return t}
+ const rd=r.body.getReader(),dec=new TextDecoder();let buf='',out='';
+ for(;;){const{done,value}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});const ls=buf.split('\n');buf=ls.pop();
+  for(const l of ls){if(!l.startsWith('data:'))continue;const d=l.slice(5).trim();if(d==='[DONE]')continue;try{const t=JSON.parse(d).choices[0].delta.content;if(t){out+=t;cb(out)}}catch(e){}}}
+ return out}
+
+/* ---------- Chat ---------- */
+const P={general:{n:'General assistant',s:'You are NEXUS, a helpful, clear and honest AI assistant. Be concise unless asked for detail.'},
+coder:{n:'Coder',s:'You are an expert software engineer. Give working code in fenced blocks, explain briefly, and point out bugs.'},
+teacher:{n:'Teacher',s:'You are a patient teacher. Explain simply with examples, then check understanding with one short question.'},
+writer:{n:'Writer',s:'You are a skilled writer and editor. Produce polished, natural text in the requested tone.'},
+director:{n:'Film director',s:'You are a film director and cinematographer. Think in scenes, shots, lenses, lighting and mood.'},
+research:{n:'Researcher',s:'You are a careful researcher. Structure answers with key points, separate facts from guesses, and say when unsure.'}};
+function sys(k){if(P[k])return P[k].s;const c=S.ct.find(x=>'my'+x.id===k);return c?c.s:P.general.s}
+function rebuildPersona(){const sel=$('#persona'),v=sel.value;sel.innerHTML=Object.entries(P).map(([k,x])=>`<option value="${k}">${x.n}</option>`).join('');S.ct.forEach(c=>sel.add(new Option('My: '+c.n,'my'+c.id)));sel.value=[...sel.options].some(o=>o.value===v)?v:'general'}
+rebuildPersona();
+const cur=()=>S.chats.find(c=>c.id===S.cur);
+let busy=false,att=null;
+function bub(m){const d=document.createElement('div');d.className='b '+(m.r==='user'?'u':'a');
+ d.innerHTML='<div class="t">'+md(m.show||m.c)+'</div>'+(m.r==='user'?'':'<div class="acts"><button data-a="copy">Copy</button><button data-a="say">Listen</button></div>');return d}
+function drawChat(){const c=cur(),box=$('#msgs');box.innerHTML='';
+ if(!c||!c.msgs.length){box.innerHTML='<div class="empty"><h2>What will you create?</h2><p>Ask, plan, write, code or research.</p>'+
+  ['Plan a 60-second short film about a lost robot','Write 3 Instagram ads for a neighbourhood coffee shop','Explain how neural networks learn, in simple words','Help me build a simple to-do web app'].map(q=>`<button class="sg" data-q="${q}">${q}</button>`).join('')+'</div>'}
+ else c.msgs.forEach(m=>box.append(bub(m)));
+ box.scrollTop=box.scrollHeight;$('#persona').value=c?c.persona:'general'}
+function newChat(){const c={id:Date.now(),title:'New chat',persona:$('#persona').value,msgs:[]};S.chats.unshift(c);S.cur=c.id;save();drawChat()}
+let lastErr='';
+async function respond(c,v){
+ busy=true;c.msgs.push({r:'assistant',c:''});drawChat();
+ const t=$('#msgs').lastChild.querySelector('.t'),box=$('#msgs');t.innerHTML='<span class="dots"><i></i><i></i><i></i></span>';
+ const hist=c.msgs.slice(0,-1).slice(-20).map(m=>({role:m.r,content:m.c}));let res='';
+ try{const out=await llm([{role:'system',content:sys(c.persona)+(v?VP:'')},...hist],x=>{t.innerHTML=md(x);box.scrollTop=box.scrollHeight});
+  res=out;c.msgs[c.msgs.length-1].c=out||'(The model sent an empty reply. Tap Retry.)';save();drawChat()}
+ catch(e){lastErr=e.message;c.msgs.pop();save();drawChat();const d=document.createElement('div');d.className='b e';d.textContent=e.message+' If this keeps happening, open Settings and tap Test connection.';box.append(d);box.scrollTop=box.scrollHeight}
+ busy=false;return res}
+async function send(txt){
+ txt=(txt!=null?txt:$('#inp').value).trim();if((!txt&&!att)||busy)return;
+ let c=cur();if(!c){newChat();c=cur()}
+ const m={r:'user',c:txt};if(att){m.c+='\n\n[Attached file: '+att.name+']\n'+att.text;m.show=txt+'\n(file: '+att.name+')'}
+ c.msgs.push(m);if(c.title==='New chat')c.title=(txt||att.name).slice(0,30);
+ $('#inp').value='';$('#inp').style.height='auto';att=null;$('#chip').hidden=true;save();await respond(c)}
+$('#send').onclick=()=>send();
+$('#inp').oninput=e=>{e.target.style.height='auto';e.target.style.height=Math.min(e.target.scrollHeight,120)+'px'};
+$('#nw').onclick=newChat;
+$('#persona').onchange=e=>{const c=cur();if(c){c.persona=e.target.value;save()}};
+$('#rt').onclick=()=>{const c=cur();if(!c||busy||!c.msgs.length)return toast('Nothing to retry');if(c.msgs[c.msgs.length-1].r==='assistant')c.msgs.pop();respond(c)};
+$('#ex').onclick=()=>{const c=cur();if(!c||!c.msgs.length)return toast('Nothing to export');dl(c.title.replace(/\W+/g,'_')+'.txt',c.msgs.map(m=>(m.r==='user'?'You: ':'NEXUS: ')+(m.show||m.c)).join('\n\n'))};
+$('#msgs').onclick=e=>{const q=e.target.dataset.q;if(q)return send(q);const a=e.target.dataset.a;if(!a)return;const tx=e.target.closest('.b').querySelector('.t').innerText;a==='copy'?copy(tx):say(tx)};
+function readFile(f,cb){if(!f)return;const r=new FileReader();r.onload=()=>cb(f.name,String(r.result).slice(0,12000));r.readAsText(f)}
+$('#att').onclick=()=>$('#file').click();
+$('#file').onchange=e=>{readFile(e.target.files[0],(n,t)=>{att={name:n,text:t};$('#chip').textContent='Attached: '+n+' (tap to remove)';$('#chip').hidden=false});e.target.value=''};
+$('#chip').onclick=()=>{att=null;$('#chip').hidden=true};
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
+if(!SR)$('#mic').hidden=true;
+$('#mic').onclick=()=>{if(rec){rec.stop();return}rec=new SR();rec.lang=navigator.language||'en-US';rec.onresult=e=>{$('#inp').value+=(($('#inp').value?' ':'')+e.results[0][0].transcript)};rec.onend=()=>{rec=null;$('#mic').textContent='Mic'};rec.onerror=()=>toast('Microphone not available');$('#mic').textContent='Stop';rec.start()};
+function drawList(){const l=$('#list');l.innerHTML=S.chats.length?'':'<p class="note">No chats yet.</p>';
+ S.chats.forEach(c=>{const d=document.createElement('div');d.className='it';d.innerHTML='<button></button><button aria-label="Delete">Delete</button>';d.children[0].textContent=c.title;
+  d.children[0].onclick=()=>{S.cur=c.id;save();drawChat();$('#sheet').hidden=true};
+  d.children[1].onclick=()=>{S.chats=S.chats.filter(x=>x.id!==c.id);if(S.cur===c.id)S.cur=S.chats[0]?S.chats[0].id:null;save();drawList();drawChat()};l.append(d)})}
+$('#hist').onclick=()=>{drawList();$('#sheet').hidden=false};$('#cl').onclick=()=>$('#sheet').hidden=true;
+
+/* ---------- Images ---------- */
+const IMPS='Rewrite the idea as one vivid, detailed image prompt covering subject, setting, composition, lighting, lens and mood. Keep the original meaning. Output only the prompt.';
+let cs=null;
+function showImg(u,p){const o=$('#iout');o.hidden=false;o.innerHTML='<div class="ld">Creating image. This can take up to a minute.</div>';
+ const im=new Image();im.alt=p;im.onload=()=>{o.innerHTML='';o.append(im);const a=document.createElement('div');a.className='acts';a.innerHTML='<button data-x="v">New variation</button><button data-x="s">Save</button><button data-x="o">Open</button>';
+  a.onclick=e=>{const x=e.target.dataset.x;if(x==='v')gen(true);if(x==='o')window.open(u,'_blank');if(x==='s')saveImg(u,p)};o.append(a)};
+ im.onerror=()=>{o.innerHTML='<div class="ld">The free image service did not respond. Check your internet and tap Create image again.</div>'};im.src=u}
+async function saveImg(u,p){try{const b=await(await fetch(u)).blob();const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=p.slice(0,30).replace(/\W+/g,'_')+'.png';a.click()}catch(e){window.open(u,'_blank');toast('Press and hold the image to save it')}}
+function drawGal(){$('#gal').innerHTML='';S.imgs.forEach(g=>{const i=document.createElement('img');i.loading='lazy';i.src=g.u;i.alt=g.p;i.onclick=()=>{$('#ip').value=g.p;showImg(g.u,g.p);$('#v-img').scrollTo(0,0)};$('#gal').append(i)})}
+async function gen(v){let p=$('#ip').value.trim();if(!p)return toast('Describe the image first');
+ if(!v&&$('#ia').checked&&p.length<160){$('#gen').textContent='Improving prompt...';try{p=(await llm([{role:'system',content:IMPS},{role:'user',content:p}],()=>{})).trim();$('#ip').value=p}catch(e){toast('Skipped prompt improvement')}$('#gen').textContent='Create image'}
+ const seed=(!v&&$('#il').checked&&cs!=null)?cs:Math.floor(Math.random()*1e6);cs=seed;
+ const[w,h]=$('#isz').value.split('x'),st=$('#is').value;
+ const u='https://image.pollinations.ai/prompt/'+encodeURIComponent(p+(st?', '+st:'')+', highly detailed, sharp focus')+'?width='+w+'&height='+h+'&seed='+seed+'&nologo=true&model='+$('#im').value;
+ showImg(u,p);S.imgs.unshift({u,p});S.imgs=S.imgs.slice(0,12);save();drawGal()}
+$('#gen').onclick=()=>gen(false);
+$('#imp').onclick=async()=>{const p=$('#ip').value.trim();if(!p)return toast('Write a short idea first');$('#imp').textContent='Working...';
+ try{$('#ip').value=(await llm([{role:'system',content:IMPS},{role:'user',content:p}],()=>{})).trim()}catch(e){toast(e.message)}$('#imp').textContent='Improve prompt'};
+
+/* ---------- Tools ---------- */
+const T=[
+{id:'cin',n:'Cinema director',d:'Shot list with camera and lighting',h:'Describe a scene or story. You get a shot list with a video prompt per shot.',s:'You are a film director. Turn the idea into a numbered shot list of 6 to 8 shots. For each give: camera angle, lens, movement, lighting, action and a ready-to-paste text-to-video prompt.'},
+{id:'vid',n:'Video prompts',d:'3 prompts for AI video apps',h:'Describe a clip. You get 3 polished video prompts.',s:'Write 3 distinct, detailed text-to-video prompts for the idea. Include subject, motion, camera, style, lighting and duration. Output only the prompts.'},
+{id:'chr',n:'Character sheet',d:'Keep a character looking the same',h:'Describe a character. You get a fixed description to paste into every image or video prompt.',s:'Create a character sheet: name, age, face, hair, body, outfit, colours, personality, plus one locked one-paragraph description to reuse in every prompt, and 5 example scene prompts using it.'},
+{id:'ad',n:'Ads and marketing',d:'Hooks, copy and a UGC script',h:'Name a product and audience.',s:'You are a marketing copywriter. Produce 5 hooks, 3 short ad variants, a 30-second UGC video script, a caption and 10 hashtags.'},
+{id:'soc',n:'Social posts',d:'A week of content ideas',h:'Say what your page or brand is about.',s:'Create a 7-day social media plan. For each day: post idea, caption, and a visual description. End with the best posting times to test.'},
+{id:'yt',n:'YouTube script',d:'Hook, outline and full script',h:'Give a video topic and length.',s:'Write a YouTube script: 3 title options, a strong 15-second hook, a timed outline, the full spoken script, and a call to action.'},
+{id:'story',n:'Story writer',d:'Short stories and scenes',h:'Give a premise, genre or characters.',s:'You are a novelist. Write an engaging short story with vivid scenes, natural dialogue and a satisfying ending.'},
+{id:'sum',n:'Summarize',d:'Key points from text or a file',h:'Paste text or load a file.',s:'Summarize the text: a 3-sentence summary, key points as bullets, then action items. Stay faithful to the text.'},
+{id:'plan',n:'Task planner',d:'Goal to steps and checklist',h:'State a goal.',s:'Break the goal into clear steps. Suggest free tools where useful. End with a checklist and the first action to take today.'},
+{id:'code',n:'Code helper',d:'Write or fix code',h:'Describe what you need or paste code to fix.',s:'You are an expert programmer. Give complete working code in fenced blocks, then a short explanation.'},
+{id:'exam',n:'Exam answer',d:'Structured 10-mark answers',h:'Enter a topic or question.',s:'Write a well-structured exam answer in simple English with headings, examples and a conclusion.'},
+{id:'quiz',n:'Quiz maker',d:'Questions with answers',h:'Give a topic or paste notes.',s:'Make a quiz of 10 questions: a mix of multiple choice and short answer, then an answer key with one-line explanations.'},
+{id:'mail',n:'Email and messages',d:'Polished replies and requests',h:'Say who it is for and what you need to say.',s:'Write the message in a clear, polite and natural tone. Give a short version and a longer version, with a subject line if it is an email.'},
+{id:'cv',n:'Resume helper',d:'Resume and cover letter text',h:'Paste your experience and the job you want.',s:'Write a strong resume summary, 6 achievement bullets using action verbs, and a one-page cover letter. Do not invent facts.'},
+{id:'name',n:'Name ideas',d:'Brands, channels and apps',h:'Describe the project.',s:'Suggest 20 short, memorable names in groups (modern, playful, premium). Add a one-line reason for the best five.'},
+{id:'tr',n:'Translate',d:'Any language',h:'First line: the language. Then the text.',s:'The first line names the target language. Translate the remaining text into it, keeping tone and meaning. Output only the translation.'}];
+let tool=T[0],lastOut='',eid=null;
+function pickTool(t){tool=t;$$('#tl button[data-i]').forEach(b=>b.classList.toggle('on',b.dataset.i===t.id));$('#th').textContent=t.h||t.d;$('#ted').hidden=!t.c}
+function card(t){const b=document.createElement('button');b.dataset.i=t.id;b.innerHTML='<b></b><small></small>';b.children[0].textContent=t.n;b.children[1].textContent=t.d||'My tool';b.onclick=()=>pickTool(t);return b}
+function drawTools(){const l=$('#tl');l.innerHTML='';T.forEach(t=>l.append(card(t)));S.ct.forEach(c=>l.append(card({id:'c'+c.id,n:c.n,d:c.d,s:c.s,c:c.id})));
+ const n=document.createElement('button');n.innerHTML='<b>+ New tool</b><small>Make your own</small>';n.onclick=()=>openForm();l.append(n);pickTool(tool)}
+function openForm(c){eid=c?c.id:null;$('#tft').textContent=c?'Edit tool':'New tool';$('#tn').value=c?c.n:'';$('#td').value=c?c.d:'';$('#tsys').value=c?c.s:'';$('#tdel').hidden=!c;$('#tsheet').hidden=false}
+$('#ted').onclick=()=>openForm(S.ct.find(x=>x.id===tool.c));
+$('#tfc').onclick=()=>$('#tsheet').hidden=true;
+$('#tsv').onclick=()=>{const n=$('#tn').value.trim(),s=$('#tsys').value.trim(),d=$('#td').value.trim();if(!n||!s)return toast('Add a name and instructions');
+ if(eid){Object.assign(S.ct.find(x=>x.id===eid),{n,d,s})}else{eid=Date.now();S.ct.push({id:eid,n,d,s})}
+ save();tool={id:'c'+eid,n,d,s,c:eid};$('#tsheet').hidden=true;drawTools();rebuildPersona();toast('Tool saved')};
+$('#tdel').onclick=()=>{if(!confirm('Delete this tool?'))return;S.ct=S.ct.filter(x=>x.id!==eid);save();tool=T[0];$('#tsheet').hidden=true;drawTools();rebuildPersona()};
+$('#tai').onclick=async()=>{const n=$('#tn').value.trim(),d=$('#td').value.trim();if(!n&&!d)return toast('Add a name or description first');$('#tai').textContent='Writing...';
+ try{$('#tsys').value=(await llm([{role:'system',content:'Write a clear, specific system prompt for an AI tool. Say what role it plays, what input it will get, the exact output format and the tone. Output only the prompt.'},{role:'user',content:'Tool name: '+n+'\nWhat it does: '+d}],()=>{})).trim()}catch(e){toast(e.message)}$('#tai').textContent='Write the instructions for me'};
+drawTools();
+$('#tf').onclick=()=>$('#tfile').click();
+$('#tfile').onchange=e=>{readFile(e.target.files[0],(n,t)=>{$('#ti').value=t;toast('Loaded '+n)});e.target.value=''};
+$('#tr').onclick=async()=>{const v=$('#ti').value.trim();if(!v)return toast('Add some input first');const o=$('#to');o.hidden=false;o.textContent='Working...';$('#tact').hidden=true;
+ try{lastOut=await llm([{role:'system',content:tool.s},{role:'user',content:v}],x=>{o.innerHTML=md(x)});$('#tact').hidden=false}catch(e){o.textContent=e.message}};
+$('#tc').onclick=()=>copy(lastOut);$('#ts').onclick=()=>say(lastOut);
+$('#tch').onclick=()=>{newChat();const c=cur();c.title=tool.n;c.msgs.push({r:'user',c:$('#ti').value,show:$('#ti').value},{r:'assistant',c:lastOut});save();go('chat');drawChat()};
+
+/* ---------- Settings ---------- */
+function fillSet(){$('#su').value=S.cfg.url;$('#sm').value=S.cfg.model;$('#sk').value=S.cfg.key}
+function readSet(){S.cfg={url:$('#su').value.trim(),model:$('#sm').value.trim(),key:$('#sk').value.trim()};save()}
+$('#p1').onclick=()=>{$('#su').value='https://openrouter.ai/api/v1';$('#sm').value='openrouter/free'};
+$('#p2').onclick=()=>{$('#su').value='http://192.168.1.10:11434';$('#sm').value='qwen2.5:3b';toast('Use your computer address and model name')};
+$('#ss').onclick=()=>{readSet();toast('Saved')};
+$('#st').onclick=async()=>{readSet();const r=$('#sr');r.textContent='Testing...';try{const o=await llm([{role:'user',content:'Reply with the single word: ready'}],()=>{});r.textContent='Connected. The model replied: '+o.slice(0,60)}catch(e){r.textContent='Failed. '+e.message}};
+$('#ea').onclick=()=>dl('nexus_chats.json',JSON.stringify(S.chats,null,1));
+$('#ca').onclick=()=>{if(confirm('Delete all chats, images and settings from this browser?')){try{localStorage.removeItem('nexus2')}catch(e){}location.reload()}};
+
+/* ---------- Voice chat ---------- */
+const VP=' You are in a spoken voice conversation. Reply in one to three short, natural sentences with no markdown, lists or emojis.';
+let vcOn=false,vrec=null;
+const vlang=()=>S.vlang||navigator.language||'en-US';
+function vst(t,x){$('#vs').textContent=t;$('#vo').dataset.s=t;$('#vt').textContent=x||''}
+function vlisten(){if(!vcOn)return;vst('Listening');let fin='',heard='';const r=vrec=new SR();r.lang=vlang();r.interimResults=true;
+ r.onresult=e=>{let x='';for(const k of e.results){x+=k[0].transcript;if(k.isFinal)fin=x}heard=x;$('#vt').textContent=x};
+ r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){vcOn=false;vst('Stopped','Microphone permission is blocked. Allow it in Chrome site settings.')}};
+ r.onend=async()=>{if(vrec===r)vrec=null;if(!vcOn)return;const q=(fin||heard).trim();if(!q){setTimeout(vlisten,400);return}
+  vst('Thinking',q);let c=cur();if(!c){newChat();c=cur()}c.msgs.push({r:'user',c:q});if(c.title==='New chat')c.title=q.slice(0,30);save();
+  const out=await respond(c,true);if(!vcOn)return;
+  if(!out){vcOn=false;vst('Stopped',lastErr||'No reply from the model.');return}
+  vspeak(out)};
+ try{r.start()}catch(e){setTimeout(vlisten,500)}}
+function vspeak(t){vst('Speaking',t);const sp=window.speechSynthesis;if(!sp){vlisten();return}sp.cancel();
+ const u=new SpeechSynthesisUtterance(t.replace(/[*#`_>~]|\p{Extended_Pictographic}/gu,''));u.lang=vlang();
+ u.onend=u.onerror=()=>{if(vcOn)setTimeout(vlisten,300)};sp.speak(u)}
+function vstop(){vcOn=false;try{vrec&&vrec.abort()}catch(e){}if(window.speechSynthesis)speechSynthesis.cancel();$('#vo').hidden=true;drawChat()}
+$('#vcb').onclick=()=>{if(!SR)return toast('Voice input is not supported in this browser');if(busy)return toast('Wait for the current reply');if(!cur())newChat();$('#vo').hidden=false;vcOn=true;vlisten()};
+$('#vc').onclick=()=>{const st=$('#vo').dataset.s;if(st==='Speaking'){speechSynthesis.cancel()}else if(st==='Listening'&&vrec){vrec.stop()}else if(st==='Stopped'){vcOn=true;vlisten()}};
+$('#vx').onclick=vstop;
+$('#vl').value=S.vlang||'';$('#vl').onchange=e=>{S.vlang=e.target.value;save()};
+
+/* ---------- Install ---------- */
+let dip=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e});
+$('#inst').onclick=()=>{if(dip){dip.prompt();dip=null}else toast(/^https?:/.test(location.protocol)?'In Chrome tap the three dots, then Install app or Add to Home screen':'Host the app online first, then install it from Chrome')};
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+/* ---------- Navigation ---------- */
+function go(v){$$('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));$$('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v))}
+$$('nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+function setT(t){document.documentElement.dataset.t=t;S.theme=t;save()}
+$('#th2').onclick=()=>setT(S.theme==='light'?'dark':'light');setT(S.theme||'dark');
+fillSet();drawGal();if(!cur()&&S.chats.length)S.cur=S.chats[0].id;drawChat();
+if(!S.cfg.key)setTimeout(()=>toast('Open Settings and paste your OpenRouter key to start'),600);
+</script></body></html>
